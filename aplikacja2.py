@@ -213,6 +213,16 @@ def render_progress_bar(label, value):
 def login_view():
     st.title("🛡️ Cyberatak na Bank - Symulacja Decyzyjna")
     
+    # Dodajemy pole na link i generator QR na samej górze
+    with st.expander("📱 Opcje dla Prowadzącego: Wyświetl kod QR dla studentów"):
+        game_url = st.text_input("Wklej tutaj link do tej aplikacji (skopiuj z paska adresu przeglądarki):")
+        if game_url:
+            # Używamy darmowego API do generowania QR
+            qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={game_url}"
+            st.image(qr_url, caption="Zeskanuj telefonem, aby dołączyć do gry")
+
+    st.divider()
+    
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Wejście dla Zespołów")
@@ -231,12 +241,11 @@ def login_view():
         st.subheader("Panel Wykładowcy")
         admin_pass = st.text_input("Hasło (domyślnie: admin):", type="password")
         if st.button("Zaloguj jako Prowadzący"):
-            if admin_pass == "Dukana_2003":
+            if admin_pass == "admin":
                 st.session_state["role"] = "admin"
                 st.rerun()
             else:
                 st.error("Odmowa dostępu!")
-
 def admin_view():
     st.title("👨‍🏫 Panel Sterowania Symulacją")
     
@@ -355,4 +364,5 @@ if "role" not in st.session_state:
 elif st.session_state["role"] == "admin":
     admin_view()
 elif st.session_state["role"] == "team":
+
     team_view()
